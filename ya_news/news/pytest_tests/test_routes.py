@@ -1,57 +1,26 @@
-from http import HTTPStatus
 import pytest
+from pytest_lazyfixture import lazy_fixture as lf
+from http import HTTPStatus
+
 from pytest_django.asserts import assertRedirects
+
+HTTP_OK = HTTPStatus.OK
+HTTP_NOT_FOUND = HTTPStatus.NOT_FOUND
 
 
 @pytest.mark.django_db
 @pytest.mark.parametrize(
     'url, client_, code',
     (
-        (
-            pytest.lazy_fixture('url_home'),
-            pytest.lazy_fixture('client'),
-            HTTPStatus.OK
-        ),
-        (
-            pytest.lazy_fixture('url_login'),
-            pytest.lazy_fixture('client'),
-            HTTPStatus.OK
-        ),
-        (
-            pytest.lazy_fixture('url_logout'),
-            pytest.lazy_fixture('client'),
-            HTTPStatus.OK
-        ),
-        (
-            pytest.lazy_fixture('url_signup'),
-            pytest.lazy_fixture('client'),
-            HTTPStatus.OK
-        ),
-        (
-            pytest.lazy_fixture('url_detail'),
-            pytest.lazy_fixture('client'),
-            HTTPStatus.OK
-        ),
-        (
-            pytest.lazy_fixture('url_edit'),
-            pytest.lazy_fixture('author_client'),
-            HTTPStatus.OK
-        ),
-        (
-            pytest.lazy_fixture('url_delete'),
-            pytest.lazy_fixture('author_client'),
-            HTTPStatus.OK
-        ),
-        (
-            pytest.lazy_fixture('url_edit'),
-            pytest.lazy_fixture('not_author_client'),
-            HTTPStatus.NOT_FOUND
-        ),
-        (
-            pytest.lazy_fixture('url_delete'),
-            pytest.lazy_fixture('not_author_client'),
-            HTTPStatus.NOT_FOUND
-        ),
+        (lf('url_home'), lf('client'), HTTP_OK),
+        (lf('url_login'), lf('client'), HTTP_OK),
+        (lf('url_logout'), lf('client'), HTTP_OK),
+        (lf('url_signup'), lf('client'), HTTP_OK),
+        (lf('url_detail'), lf('client'), HTTP_OK),
+        (lf('url_edit'), lf('author_client'), HTTP_OK),
+        (lf('url_delete'), lf('author_client'), HTTP_OK),
+        (lf('url_edit'), lf('not_author_client'), HTTP_NOT_FOUND),
+        (lf('url_delete'), lf('not_author_client'), HTTP_NOT_FOUND),
     )
 )
 def test_status_codes(url, client_, code):
@@ -62,13 +31,11 @@ def test_status_codes(url, client_, code):
 @pytest.mark.parametrize(
     'url, expected_url',
     (
-        (pytest.lazy_fixture('url_edit'),
-         pytest.lazy_fixture('url_login')),
-        (pytest.lazy_fixture('url_delete'),
-         pytest.lazy_fixture('url_login')),
+        (lf('url_edit'),),
+        (lf('url_delete'),),
     ),
 )
-def test_anonymous_redirects(url, expected_url, client):
+def test_anonymous_redirects(url, expected_url, client, url_login):
+    expected_url = f'{url_login}?next={url}'
     response = client.get(url)
-    expected_url = f'{expected_url}?next={url}'
     assertRedirects(response, expected_url)

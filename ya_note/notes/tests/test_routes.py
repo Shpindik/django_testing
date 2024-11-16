@@ -1,5 +1,8 @@
-from .base import BaseTestCase
 from http import HTTPStatus
+
+from django.contrib.auth import get_user_model
+
+from .base import BaseTestCase
 
 
 class TestRoutes(BaseTestCase):
@@ -21,7 +24,13 @@ class TestRoutes(BaseTestCase):
             [self.detail_url, self.another_client, HTTPStatus.NOT_FOUND],
         ]
         for url, client, expected_status_code in test_cases:
-            with self.subTest(name=url):
+            user = get_user_model().objects.get(
+                id=client.session['_auth_user_id']) if client.session else None
+            with self.subTest(
+                url=url,
+                client=user,
+                expected_status_code=expected_status_code
+            ):
                 response = client.get(url)
                 self.assertEqual(response.status_code, expected_status_code)
 
@@ -30,7 +39,10 @@ class TestRoutes(BaseTestCase):
             self.add_url, self.list_url, self.success_url,
             self.edit_url, self.delete_url, self.detail_url
         ):
-            with self.subTest(name=name):
-                redirect_url = f'{self.login_url}?next={name}'
-                response = self.client.get(name)
+            redirect_url = f'{self.login_url}?next={name}'
+            response = self.client.get(name)
+            with self.subTest(
+                name=name,
+                expected_status_code=HTTPStatus.FOUND
+            ):
                 self.assertRedirects(response, redirect_url)

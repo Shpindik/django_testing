@@ -1,9 +1,12 @@
 import pytest
-from django.test.client import Client
-from news.models import Comment, News
 from datetime import datetime, timedelta
+
 from django.conf import settings
+from django.test.client import Client
 from django.urls import reverse
+from django.utils import timezone
+
+from news.models import Comment, News
 
 
 FORM_DATA = {
@@ -75,6 +78,8 @@ def comment_all(news, author):
             author=author,
         )
         comment.save()
+        comment.created = timezone.now() - timedelta(seconds=i)
+        comment.save(update_fields=['created'])
 
 
 @pytest.fixture

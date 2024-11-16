@@ -1,7 +1,8 @@
-from django.test import TestCase, Client
-from notes.models import Note
-from django.urls import reverse
 from django.contrib.auth import get_user_model
+from django.test import TestCase, Client
+from django.urls import reverse
+
+from notes.models import Note
 
 User = get_user_model()
 
