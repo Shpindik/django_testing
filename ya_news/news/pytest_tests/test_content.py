@@ -4,7 +4,7 @@ from django.conf import settings
 
 from news.forms import CommentForm
 
-pytestmark = pytest.mark.django_db 
+pytestmark = pytest.mark.django_db
 
 
 def test_home_page_news_count(client, news_all, url_home):
