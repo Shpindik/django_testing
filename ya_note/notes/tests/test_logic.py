@@ -13,6 +13,7 @@ class TestNoteEditDelete(BaseTestCase):
 
     def setUp(self):
         super().setUp()
+        self.client.force_login(self.auth_client.user)
         self.initial_title = self.note.title
         self.initial_text = self.note.text
         self.initial_slug = self.note.slug
