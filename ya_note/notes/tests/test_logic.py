@@ -1,11 +1,8 @@
 from http import HTTPStatus
-
 from django.core.management import call_command
 from django.utils.text import slugify
-
 from notes.forms import WARNING
 from notes.models import Note
-
 from .base import BaseTestCase
 
 
@@ -53,7 +50,7 @@ class TestNoteEditDelete(BaseTestCase):
         self.assertEqual(self.note.title, self.form_data['title'])
         self.assertEqual(self.note.text, self.form_data['text'])
         self.assertEqual(self.note.slug, self.form_data['slug'])
-        self.assertEqual(self.note.author, self.auth_client._user)
+        self.assertEqual(self.note.author, self.auth_client.user)
 
     def test_author_can_delete(self):
         initial_notes_count = Note.objects.count()
