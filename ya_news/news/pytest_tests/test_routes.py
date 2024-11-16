@@ -31,8 +31,8 @@ def test_status_codes(url, client_, code):
 @pytest.mark.parametrize(
     'url, expected_url',
     (
-        (lf('url_edit'),),
-        (lf('url_delete'),),
+        (lf('url_edit'), lf('url_login')),
+        (lf('url_delete'), lf('url_login')),
     ),
 )
 def test_anonymous_redirects(url, expected_url, client, url_login):
