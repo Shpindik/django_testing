@@ -36,7 +36,7 @@ class TestNoteEditDelete(BaseTestCase):
         self.auth_client.post(self.add_url, data=self.FORM_DATA_1)
         response = self.auth_client.post(self.add_url, data=self.FORM_DATA_1)
         self.assertFormError(
-            response, 
+            response,
             form='form',
             field='slug',
             errors=[WARNING]
