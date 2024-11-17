@@ -4,7 +4,7 @@ from notes.models import Note
 from pytils.translit import slugify
 
 from .base import BaseTestCase
-from ya_note.notes.forms import WARNING
+from notes.forms import WARNING
 
 
 class TestNoteEditDelete(BaseTestCase):
