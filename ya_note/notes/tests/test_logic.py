@@ -14,6 +14,7 @@ class TestNoteEditDelete(BaseTestCase):
         self.initial_slug = self.note.slug
 
     def test_create_note_authorized(self):
+        Note.objects.all().delete()
         response = self.auth_client.post(
             self.add_url, data=self.form_data
         )
@@ -38,7 +39,10 @@ class TestNoteEditDelete(BaseTestCase):
             form='form',
             field='slug',
             errors=[
-                'такой slug уже существует, придумайте уникальное значение!'
+                (
+                 'qwe - такой slug уже существует, '
+                 'придумайте уникальное значение!'
+                )
             ]
         )
         form = response.context['form']
