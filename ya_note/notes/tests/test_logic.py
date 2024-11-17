@@ -2,7 +2,7 @@ from http import HTTPStatus
 
 from notes.forms import WARNING
 from notes.models import Note
-from django.utils.text import slugify
+from pytils.translit import slugify
 
 from .base import BaseTestCase
 
@@ -11,7 +11,6 @@ class TestNoteEditDelete(BaseTestCase):
 
     def setUp(self):
         super().setUp()
-        self.client.force_login(self.auth_client.user)
         self.initial_title = self.note.title
         self.initial_text = self.note.text
         self.initial_slug = self.note.slug
