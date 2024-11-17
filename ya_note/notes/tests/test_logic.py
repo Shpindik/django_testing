@@ -14,7 +14,6 @@ class TestNoteEditDelete(BaseTestCase):
         self.initial_title = self.note.title
         self.initial_text = self.note.text
         self.initial_slug = self.note.slug
-        self.initial_author = self.note.author
 
     def test_create_note_authorized(self):
         Note.objects.all().delete()
