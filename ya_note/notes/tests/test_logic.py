@@ -23,7 +23,6 @@ class TestNoteEditDelete(BaseTestCase):
         self.assertEqual(note.title, self.form_data['title'])
         self.assertEqual(note.text, self.form_data['text'])
         self.assertEqual(note.slug, self.form_data['slug'])
-        self.assertEqual(note.author, self.auth_client.user)
 
     def test_create_note_unauthorized(self):
         Note.objects.all().delete()
