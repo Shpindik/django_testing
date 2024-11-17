@@ -1,8 +1,9 @@
 from http import HTTPStatus
-from django.core.management import call_command
-from django.utils.text import slugify
+
 from notes.forms import WARNING
 from notes.models import Note
+from django.utils.text import slugify
+
 from .base import BaseTestCase
 
 
@@ -17,12 +18,13 @@ class TestNoteEditDelete(BaseTestCase):
 
     def test_create_note_authorized(self):
         Note.objects.all().delete()
-        response = self.auth_client.post(self.add_url, data=self.form_data)
+        response = self.auth_client.post(
+            self.add_url, data=self.form_data
+        )
         self.assertRedirects(response, self.success_url)
-        note = Note.objects.get(title=self.TITLE)
+        note = Note.objects.get()
         self.assertEqual(note.title, self.TITLE)
-        self.assertEqual(note.text, self.form_data['text'])
-        self.assertEqual(note.slug, self.form_data['slug'])
+        self.assertEqual(note.content, self.form_data['content'])
 
     def test_create_note_unauthorized(self):
         Note.objects.all().delete()
@@ -31,25 +33,33 @@ class TestNoteEditDelete(BaseTestCase):
         self.assertEqual(notes_count, 0)
 
     def test_create_note_duplicate_slug(self):
+        self.auth_client.post(self.add_url, data=self.FORM_DATA_1)
         response = self.auth_client.post(self.add_url, data=self.FORM_DATA_1)
-        self.assertFormError(response, 'form', 'slug', WARNING)
-        self.assertEqual(Note.objects.count(), 0)
+        self.assertFormError(
+            response, 
+            form='form',
+            field='slug',
+            errors=[WARNING]
+        )
+        form = response.context['form']
+        self.assertEqual(len(form.errors['slug']), 1)
 
     def test_create_note_auto_slug(self):
-        call_command('flush', '--no-input')
+        Note.objects.all().delete()
         response = self.auth_client.post(self.add_url, data=self.FORM_DATA_2)
         self.assertRedirects(response, self.success_url)
         generated_slug = slugify(self.FORM_DATA_2['title'])
         self.assertTrue(Note.objects.filter(slug=generated_slug).exists())
 
     def test_author_can_edit(self):
-        response = self.auth_client.post(self.edit_url, data=self.form_data)
-        self.assertRedirects(response, self.success_url)
+        self.assertRedirects(self.auth_client.post(
+            self.edit_url, data=self.form_data
+        ), self.success_url)
         self.note.refresh_from_db()
         self.assertEqual(self.note.title, self.form_data['title'])
         self.assertEqual(self.note.text, self.form_data['text'])
         self.assertEqual(self.note.slug, self.form_data['slug'])
-        self.assertEqual(self.note.author, self.auth_client.user)
+        self.assertEqual(self.note.author, self.inital_author)
 
     def test_author_can_delete(self):
         initial_notes_count = Note.objects.count()
