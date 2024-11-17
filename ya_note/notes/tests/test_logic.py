@@ -27,7 +27,7 @@ class TestNoteEditDelete(BaseTestCase):
         self.assertEqual(note.title, self.form_data['title'])
         self.assertEqual(note.text, self.form_data['text'])
         self.assertEqual(note.slug, self.form_data['slug'])
-        self.assertEqual(note.author, self.auth_client.user)
+        self.assertEqual(note.author, self.author)
 
     def test_create_note_unauthorized(self):
         Note.objects.all().delete()
@@ -61,7 +61,7 @@ class TestNoteEditDelete(BaseTestCase):
         self.assertEqual(self.note.title, self.form_data['title'])
         self.assertEqual(self.note.text, self.form_data['text'])
         self.assertEqual(self.note.slug, self.form_data['slug'])
-        self.assertEqual(self.note.author, self.auth_client.user)
+        self.assertEqual(self.note.author, self.author)
 
     def test_author_can_delete(self):
         initial_notes_count = Note.objects.count()
@@ -75,7 +75,7 @@ class TestNoteEditDelete(BaseTestCase):
         self.assertEqual(self.note.title, self.initial_title)
         self.assertEqual(self.note.text, self.initial_text)
         self.assertEqual(self.note.slug, self.initial_slug)
-        self.assertEqual(self.note.author, self.auth_client.user)
+        self.assertEqual(self.note.author, self.author)
 
     def test_another_user_cannot_edit(self):
         response = self.another_client.post(
