@@ -1,5 +1,4 @@
 import pytest
-
 from django.conf import settings
 
 from news.forms import CommentForm
@@ -11,7 +10,6 @@ def test_home_page_news_count(client, news_all, url_home):
     response = client.get(url_home)
     assert response.context_data['object_list'].count() == (
         settings.NEWS_COUNT_ON_HOME_PAGE)
-    assert 'object_list' in response.context_data
 
 
 def test_home_page_news_order(client, news_all, url_home):

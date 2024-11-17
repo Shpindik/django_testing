@@ -1,5 +1,5 @@
-from .base import BaseTestCase
 from notes.forms import NoteForm
+from .base import BaseTestCase
 
 
 class TestDetailPage(BaseTestCase):

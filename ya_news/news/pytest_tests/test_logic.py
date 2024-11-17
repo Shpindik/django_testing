@@ -1,14 +1,13 @@
-import pytest
 from http import HTTPStatus
 
-from pytest_django.asserts import assertRedirects, assertFormError
+import pytest
+from pytest_django.asserts import assertFormError, assertRedirects
 
 from news.forms import WARNING, BAD_WORDS
 from news.models import Comment
-
 from .conftest import FORM_DATA
 
-pytestmark = pytest.mark.django_db  # Глобальная метка для всех тестов
+pytestmark = pytest.mark.django_db
 
 
 def test_anonymous_user_cant_create_comment(client, url_detail, url_login):

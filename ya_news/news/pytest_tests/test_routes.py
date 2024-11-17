@@ -1,8 +1,8 @@
-import pytest
-from pytest_lazyfixture import lazy_fixture as lf
 from http import HTTPStatus
 
+import pytest
 from pytest_django.asserts import assertRedirects
+from pytest_lazyfixture import lazy_fixture as lf
 
 HTTP_OK = HTTPStatus.OK
 HTTP_NOT_FOUND = HTTPStatus.NOT_FOUND
@@ -29,13 +29,10 @@ def test_status_codes(url, client_, code):
 
 @pytest.mark.django_db
 @pytest.mark.parametrize(
-    'url, expected_url',
-    (
-        (lf('url_edit'), lf('url_login')),
-        (lf('url_delete'), lf('url_login')),
-    ),
+    'url',
+    (lf('url_edit'), lf('url_delete')),
 )
-def test_anonymous_redirects(url, expected_url, client, url_login):
+def test_anonymous_redirects(url, client, url_login):
     expected_url = f'{url_login}?next={url}'
     response = client.get(url)
     assertRedirects(response, expected_url)
